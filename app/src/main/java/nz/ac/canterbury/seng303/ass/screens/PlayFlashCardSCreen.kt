@@ -10,17 +10,25 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -47,88 +55,122 @@ fun PlayCard(navController: NavController,
         }
     }
 
-    // Playing
-    if (currentIndex < shuffledCards.size) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(16.dp)
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .border(
-                        width = 2.dp,
-                        color = Color.DarkGray,
-                        shape = RoundedCornerShape(16.dp),
-                    )
-                    .padding(16.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    text = shuffledCards[currentIndex].question,
-                    fontSize = 25.sp
-                )
-            }
-            Spacer(modifier = Modifier.height(16.dp)) // Adds space between cards
-
-
-            answers.forEach { answer ->
-                CardRow(
-                    answer = answer.first,
-                    isChecked = selectedAnswer == answer,
-                    onCheckedChange = {
-                        selectedAnswer = answer
-                    }
-                )
-                Spacer(modifier = Modifier.height(16.dp)) // Adds space between cards
-
-            }
-            Spacer(modifier = Modifier.weight(1f)) // Spacer to push the button to the bottom
-
-            Row(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(vertical = 32.dp)
-                    .padding(horizontal = 40.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(text = "${currentIndex + 1}/${cards.size}" )
-                Button(
-                    onClick = {
-                        if (selectedAnswer == null) {
-                            Toast.makeText(context, "You need to select an answer", Toast.LENGTH_SHORT).show()
-                        } else {
-
-                            val message =
-                                if (selectedAnswer?.second == true) "Correct" else "Incorrect"
-                            val isCorrect = selectedAnswer?.second == true
-                            results = results + (shuffledCards[currentIndex].question to isCorrect)
-                            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-                            currentIndex++
-                            selectedAnswer = null
-                        }
-                    },
-                    modifier = Modifier.padding(top = 16.dp)
-                ) {
-                    Text(text = "Submit")
-                }
-            }
-        }
-    } else {
-        // Summary
+    if (cards.isEmpty()) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp),
+            verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(text = "Quiz completed!")
-            results.forEach { result ->
-                SummaryRow(result = result)
+            Text(
+                text = "You do not have any cards. Please create one to get started.",
+                style = androidx.compose.ui.text.TextStyle(
+                    fontSize = 18.sp,
+                    color = Color.Gray
+                ),
+                textAlign = TextAlign.Center
+            )
+        }
+    } else {
+        // Playing
+        if (currentIndex < shuffledCards.size) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .padding(16.dp)
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .border(
+                            width = 2.dp,
+                            color = Color.DarkGray,
+                            shape = RoundedCornerShape(16.dp),
+                        )
+                        .padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = shuffledCards[currentIndex].question,
+                        fontSize = 25.sp
+                    )
+                }
+                Spacer(modifier = Modifier.height(16.dp)) // Adds space between cards
+
+
+                answers.forEach { answer ->
+                    CardRow(
+                        answer = answer.first,
+                        isChecked = selectedAnswer == answer,
+                        onCheckedChange = {
+                            selectedAnswer = answer
+                        }
+                    )
+                    Spacer(modifier = Modifier.height(16.dp)) // Adds space between cards
+
+                }
+                Spacer(modifier = Modifier.weight(1f)) // Spacer to push the button to the bottom
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(vertical = 32.dp)
+                        .padding(horizontal = 40.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(text = "${currentIndex + 1}/${cards.size}")
+                    Button(
+                        onClick = {
+                            if (selectedAnswer == null) {
+                                Toast.makeText(
+                                    context,
+                                    "You need to select an answer",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            } else {
+
+                                val message =
+                                    if (selectedAnswer?.second == true) "Correct" else "Incorrect"
+                                val isCorrect = selectedAnswer?.second == true
+                                results =
+                                    results + (shuffledCards[currentIndex].question to isCorrect)
+                                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                                currentIndex++
+                                selectedAnswer = null
+                            }
+                        },
+                        modifier = Modifier.padding(top = 16.dp)
+                    ) {
+                        Text(text = "Submit")
+                    }
+                }
+            }
+        } else {
+            // Summary
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                val correctAnswersCount = results.count { it.second }
+                Text(text = "Summary",
+                    fontSize = 40.sp,
+                    fontWeight = FontWeight.Bold,
+                )
+                Text(text = "Score: ${correctAnswersCount}/${cards.size}",
+                    fontSize = 40.sp,
+                    fontWeight = FontWeight.W400,
+                )
+                Spacer(modifier = Modifier.height(16.dp)) // Adds space between cards
+                results.forEach { result ->
+                    SummaryRow(result = result)
+                    Spacer(modifier = Modifier.height(16.dp)) // Adds space between cards
+                }
             }
         }
     }
@@ -149,6 +191,7 @@ fun CardRow(
                 shape = RoundedCornerShape(16.dp),
             )
             .padding(bottom = 16.dp),
+            verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             text = answer,
@@ -168,18 +211,35 @@ fun CardRow(
 fun SummaryRow(
     result: Pair<String, Boolean>
 ) {
-    Row (
+    Row(
         modifier = Modifier
             .fillMaxWidth()
             .border(
                 width = 2.dp,
                 color = Color.LightGray,
-                shape = RoundedCornerShape(16.dp),
+                shape = RoundedCornerShape(32.dp),
             )
-            .padding(bottom = 16.dp),
+            .padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(text = result.first)
-        val message = if (result.second) "Correct" else "Incorrect"
-        Text(text = message)
+        // Left Text with weight to take up available space and center it
+        Text(
+            text = result.first,
+            modifier = Modifier
+                .weight(1f)
+                .padding(start = 8.dp),
+            textAlign = TextAlign.Center
+        )
+
+        // Right Icon
+        val icon: ImageVector = if (result.second) Icons.Filled.Check else Icons.Filled.Close
+        Icon(
+            imageVector = icon,
+            contentDescription = if (result.second) "Correct" else "Incorrect",
+            tint = if (result.second) Color.Green else Color.Red,
+            modifier = Modifier
+                .size(24.dp),
+        )
     }
 }

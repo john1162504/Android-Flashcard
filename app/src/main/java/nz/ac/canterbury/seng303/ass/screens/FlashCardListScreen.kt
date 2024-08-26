@@ -8,6 +8,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -31,21 +32,46 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 
 import nz.ac.canterbury.seng303.ass.models.FlashCard
 import nz.ac.canterbury.seng303.ass.viewmodels.FlashCardViewModel
+import java.time.format.TextStyle
 
 @Composable
 fun CardList(navController: NavController, cardViewModel: FlashCardViewModel ) {
     cardViewModel.getCards()
     val cards: List<FlashCard> by cardViewModel.cards.collectAsState()
-    LazyColumn {
-        items(cards) { card ->
-            CardItem(navController = navController, card = card, deleteFn = {id: Int -> cardViewModel.deleteCardById(id) })
-            Divider()
+    if (cards.isEmpty()) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "You do not have any cards. Please create one to get started.",
+                style = androidx.compose.ui.text.TextStyle(
+                    fontSize = 18.sp,
+                    color = Color.Gray
+                ),
+                textAlign = TextAlign.Center
+            )
+        }
+    } else {
+        LazyColumn {
+            items(cards) { card ->
+                CardItem(
+                    navController = navController,
+                    card = card,
+                    deleteFn = { id: Int -> cardViewModel.deleteCardById(id) })
+                Divider()
+            }
         }
     }
 }
