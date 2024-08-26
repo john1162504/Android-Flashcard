@@ -8,17 +8,20 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import nz.ac.canterbury.seng303.ass.util.validateAnswer
+import nz.ac.canterbury.seng303.ass.viewmodels.CreateCardViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateFlashCard(
     navController: NavController,
+    cardViewModel: CreateCardViewModel,
     question: String,
     onQuestionChange: (String) -> Unit,
     answers: List<Pair<String, Boolean>>,
@@ -30,6 +33,10 @@ fun CreateFlashCard(
         "" to false,
         "" to false,
     )
+
+    LaunchedEffect(Unit){
+        cardViewModel.resetModel()
+    }
 
     // Make the entire screen scrollable by wrapping the content in a verticalScroll
     Column(

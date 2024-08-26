@@ -6,11 +6,9 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 
 class CreateCardViewModel: ViewModel() {
-    private val defaultAnswers = listOf(
+     val defaultAnswers = listOf(
         "" to false,
         "" to false,
-        "" to false,
-        "" to false
     )
 
     var question by mutableStateOf("")
@@ -25,5 +23,10 @@ class CreateCardViewModel: ViewModel() {
 
     fun updateAnswers(newAnswers: List<Pair<String, Boolean>>) {
         answers = newAnswers
+    }
+
+    fun resetModel() {
+        answers = defaultAnswers
+        question = ""
     }
 }

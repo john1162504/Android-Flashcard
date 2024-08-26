@@ -10,7 +10,7 @@ import nz.ac.canterbury.seng303.ass.viewmodels.FlashCardViewModel
 fun FlashCard(cardId: String, cardViewModel: FlashCardViewModel) {
     cardViewModel.getCardById(cardId = cardId.toIntOrNull())
     val selectedCardState by cardViewModel.selectedCard.collectAsState(null)
-    val card: FlashCard? = selectedCardState
+    val card: FlashCard = selectedCardState!!
 
 
 }
