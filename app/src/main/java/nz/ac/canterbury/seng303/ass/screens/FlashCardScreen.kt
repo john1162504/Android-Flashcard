@@ -1,10 +1,8 @@
 package nz.ac.canterbury.seng303.ass.screens
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.lifecycle.ViewModel
 import nz.ac.canterbury.seng303.ass.models.FlashCard
 import nz.ac.canterbury.seng303.ass.viewmodels.FlashCardViewModel
 

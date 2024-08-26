@@ -1,6 +1,9 @@
 package nz.ac.canterbury.seng303.ass.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
@@ -10,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import nz.ac.canterbury.seng303.ass.util.validateAnswer
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -21,18 +25,17 @@ fun CreateFlashCard(
     onAnswersChange: (List<Pair<String, Boolean>>) -> Unit,
     createFlashCardFn: (String, List<Pair<String, Boolean>>) -> Unit
 ) {
-
     val context = LocalContext.current
     val defaultAnswers = listOf(
         "" to false,
         "" to false,
-        "" to false,
-        "" to false
     )
 
+    // Make the entire screen scrollable by wrapping the content in a verticalScroll
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .verticalScroll(rememberScrollState()) // Enable scrolling for the entire screen
             .padding(16.dp)
     ) {
         OutlinedTextField(
@@ -85,23 +88,34 @@ fun CreateFlashCard(
             Text("Add Answer")
         }
 
+        Spacer(modifier = Modifier.height(16.dp))
+
         Button(
             onClick = {
-                createFlashCardFn(question, answers)
-                val builder = android.app.AlertDialog.Builder(context)
-                builder.setMessage("Created Card!")
-                    .setCancelable(false)
-                    .setPositiveButton("Ok") { dialog, id ->
-                        onQuestionChange("")
-                        onAnswersChange(defaultAnswers)
-                        navController.navigate("CardList")
+                if (question.isEmpty()) {
+                    Toast.makeText(context, "Question can not be empty", Toast.LENGTH_LONG).show()
+                } else {
+                    val (errorMsg, isValid) = validateAnswer(answers)
+                    if (isValid) {
+                        createFlashCardFn(question, answers)
+                        val builder = android.app.AlertDialog.Builder(context)
+                        builder.setMessage("Created Card!")
+                            .setCancelable(false)
+                            .setPositiveButton("Ok") { dialog, id ->
+                                onQuestionChange("")
+                                onAnswersChange(defaultAnswers)
+                                navController.navigate("CardList")
+                            }
+                        val alert = builder.create()
+                        alert.show()
+                    } else {
+                        Toast.makeText(context, errorMsg, Toast.LENGTH_LONG).show()
                     }
-                    .setNegativeButton("Cancel") { dialog, id -> dialog.dismiss() }
-                val alert = builder.create()
-                alert.show()
+                }
             },
-            modifier = Modifier.align(Alignment.CenterHorizontally)
+            modifier = Modifier
                 .fillMaxWidth()
+                .padding(vertical = 16.dp) // Padding for the button
         ) {
             Text(text = "Create")
         }

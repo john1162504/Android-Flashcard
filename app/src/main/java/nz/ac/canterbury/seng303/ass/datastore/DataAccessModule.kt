@@ -9,9 +9,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.FlowPreview
 import nz.ac.canterbury.seng303.ass.models.FlashCard
-import nz.ac.canterbury.seng303.ass.models.Note
 import nz.ac.canterbury.seng303.ass.viewmodels.FlashCardViewModel
-import nz.ac.canterbury.seng303.ass.viewmodels.NoteViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
@@ -33,6 +31,5 @@ val dataAccessModule = module {
 
     single { Gson() }
 
-    viewModel { NoteViewModel(noteStorage = get()) }
     viewModel { FlashCardViewModel(cardStorage = get()) }
 }

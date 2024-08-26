@@ -123,7 +123,7 @@ fun CardItem(navController: NavController, card: FlashCard,  deleteFn: (id:Int) 
         }
         IconButton(onClick = {
             val builder = AlertDialog.Builder(context)
-            builder.setMessage("Delete Flashcard \"${"123"}\"?")
+            builder.setMessage("Delete Flashcard \"${card.question}\"?")
                 .setCancelable(false)
                 .setPositiveButton("Delete") { dialog, id ->
                         deleteFn(card.id)

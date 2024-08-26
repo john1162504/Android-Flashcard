@@ -31,6 +31,7 @@ import nz.ac.canterbury.seng303.ass.screens.CardList
 import nz.ac.canterbury.seng303.ass.screens.CreateFlashCard
 import nz.ac.canterbury.seng303.ass.screens.EditCard
 import nz.ac.canterbury.seng303.ass.screens.FlashCard
+import nz.ac.canterbury.seng303.ass.screens.PlayCard
 import nz.ac.canterbury.seng303.ass.ui.theme.Lab1Theme
 import nz.ac.canterbury.seng303.ass.viewmodels.CreateCardViewModel
 import nz.ac.canterbury.seng303.ass.viewmodels.EditCardViewModel
@@ -82,6 +83,9 @@ class MainActivity : ComponentActivity() {
                                 val cardId = backStackEntry.arguments?.getString("cardId")
                                 cardId?.let { cardIdParam: String -> FlashCard(cardIdParam, cardViewModel) }
                             }
+                            composable("PlayCard") {
+                                PlayCard(navController, cardViewModel)
+                            }
                             composable("CardList") {
                                 CardList(navController, cardViewModel)
                             }
@@ -128,6 +132,9 @@ fun Home(navController: NavController) {
         
         Button(onClick = { navController.navigate("CreateCard") }) {
             Text(text = "Create Flash Card")
+        }
+        Button(onClick = { navController.navigate("PlayCard") }) {
+            Text(text = "Play Flash Card")
         }
     }
 }
