@@ -128,7 +128,7 @@ fun CardItem(navController: NavController, card: FlashCard,  deleteFn: (id:Int) 
                 tint = Color.White,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color.DarkGray, shape = RoundedCornerShape(12.dp))
+                    .background(Color.LightGray, shape = RoundedCornerShape(12.dp))
             )
         }
         IconButton(onClick = {

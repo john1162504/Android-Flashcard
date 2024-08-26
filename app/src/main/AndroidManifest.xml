@@ -15,6 +15,7 @@
         android:name=".MainApplication">
         <activity
             android:name=".MainActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="true"
             android:label="Flash303"
             android:theme="@style/Theme.Lab2">
