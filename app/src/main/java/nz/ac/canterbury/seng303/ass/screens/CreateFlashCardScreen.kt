@@ -111,7 +111,9 @@ fun CreateFlashCard(
                             .setPositiveButton("Ok") { dialog, id ->
                                 onQuestionChange("")
                                 onAnswersChange(defaultAnswers)
-                                navController.navigate("CardList")
+                                navController.navigate("CardList") {
+                                    popUpTo("CreateCard") {inclusive = true}
+                                }
                             }
                         val alert = builder.create()
                         alert.show()

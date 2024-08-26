@@ -130,7 +130,7 @@ fun EditCard(
                         builder.setMessage("Edited card!")
                             .setCancelable(false)
                             .setPositiveButton("Ok") { dialog, id ->
-                                navController.navigate("CardList")
+                                navController.popBackStack()
                             }
                         val alert = builder.create()
                         alert.show()
