@@ -39,6 +39,7 @@ import nz.ac.canterbury.seng303.ass.viewmodels.FlashCardViewModel
 fun PlayCard(navController: NavController,
              cardViewModel: FlashCardViewModel
 ) {
+    cardViewModel.getCards()
     val context = LocalContext.current
     var currentIndex by remember { mutableStateOf(0) }
     val cards: List<FlashCard> by cardViewModel.cards.collectAsState()
@@ -98,7 +99,7 @@ fun PlayCard(navController: NavController,
                         fontSize = 25.sp
                     )
                 }
-                Spacer(modifier = Modifier.height(16.dp)) // Adds space between cards
+                Spacer(modifier = Modifier.height(16.dp))
 
 
                 answers.forEach { answer ->

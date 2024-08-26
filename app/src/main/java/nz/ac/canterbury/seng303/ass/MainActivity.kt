@@ -81,7 +81,7 @@ class MainActivity : ComponentActivity() {
                                 })
                             ) { backStackEntry ->
                                 val cardId = backStackEntry.arguments?.getString("cardId")
-                                cardId?.let { cardIdParam: String -> FlashCard(cardIdParam, cardViewModel) }
+                                cardId?.let { cardIdParam: String -> FlashCard(cardIdParam, cardViewModel, navController) }
                             }
                             composable("PlayCard") {
                                 PlayCard(navController, cardViewModel)
