@@ -36,20 +36,19 @@ import nz.ac.canterbury.seng303.ass.models.FlashCard
 import nz.ac.canterbury.seng303.ass.viewmodels.FlashCardViewModel
 
 @Composable
-fun PlayCard(navController: NavController,
-             cardViewModel: FlashCardViewModel
-) {
+fun PlayCard(navController: NavController, cardViewModel: FlashCardViewModel) {
     cardViewModel.getCards()
     val context = LocalContext.current
     var currentIndex by remember { mutableStateOf(0) }
     val cards: List<FlashCard> by cardViewModel.cards.collectAsState()
     val shuffledCards by remember { mutableStateOf(cards.shuffled()) }
+
     var answers by remember { mutableStateOf<List<Pair<String, Boolean>>>(emptyList()) }
     var selectedAnswer by remember { mutableStateOf<Pair<String, Boolean>?>(null) }
     var results by remember { mutableStateOf<List<Pair<String, Boolean>>>(emptyList()) }
 
-
-    LaunchedEffect(currentIndex, cards) {
+    // Update answers when currentIndex changes
+    LaunchedEffect(currentIndex) {
         if (cards.isNotEmpty() && currentIndex < cards.size) {
             answers = shuffledCards[currentIndex].answers.shuffled()
             selectedAnswer = null
@@ -101,7 +100,6 @@ fun PlayCard(navController: NavController,
                 }
                 Spacer(modifier = Modifier.height(16.dp))
 
-
                 answers.forEach { answer ->
                     CardRow(
                         answer = answer.first,
@@ -111,7 +109,6 @@ fun PlayCard(navController: NavController,
                         }
                     )
                     Spacer(modifier = Modifier.height(16.dp)) // Adds space between cards
-
                 }
                 Spacer(modifier = Modifier.weight(1f)) // Spacer to push the button to the bottom
 
@@ -133,7 +130,6 @@ fun PlayCard(navController: NavController,
                                     Toast.LENGTH_SHORT
                                 ).show()
                             } else {
-
                                 val message =
                                     if (selectedAnswer?.second == true) "Correct" else "Incorrect"
                                 val isCorrect = selectedAnswer?.second == true
@@ -176,6 +172,7 @@ fun PlayCard(navController: NavController,
         }
     }
 }
+
 
 @Composable
 fun CardRow(

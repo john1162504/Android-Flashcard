@@ -15,19 +15,23 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import nz.ac.canterbury.seng303.ass.util.validateAnswer
+import nz.ac.canterbury.seng303.ass.util.validateQuestion
 import nz.ac.canterbury.seng303.ass.viewmodels.CreateCardViewModel
+import nz.ac.canterbury.seng303.ass.viewmodels.FlashCardViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateFlashCard(
     navController: NavController,
-    cardViewModel: CreateCardViewModel,
+    createCardViewModel: CreateCardViewModel,
+    cardViewModel: FlashCardViewModel,
     question: String,
     onQuestionChange: (String) -> Unit,
     answers: List<Pair<String, Boolean>>,
     onAnswersChange: (List<Pair<String, Boolean>>) -> Unit,
     createFlashCardFn: (String, List<Pair<String, Boolean>>) -> Unit
 ) {
+    cardViewModel.getCards()
     val context = LocalContext.current
     val defaultAnswers = listOf(
         "" to false,
@@ -35,7 +39,7 @@ fun CreateFlashCard(
     )
 
     LaunchedEffect(Unit){
-        cardViewModel.resetModel()
+        createCardViewModel.resetModel()
     }
 
     // Make the entire screen scrollable by wrapping the content in a verticalScroll
@@ -99,8 +103,13 @@ fun CreateFlashCard(
 
         Button(
             onClick = {
-                if (question.isEmpty()) {
-                    Toast.makeText(context, "Question can not be empty", Toast.LENGTH_LONG).show()
+                val (errorQuestion, isValidQuestion) = validateQuestion(
+                    createCardViewModel.question,
+                     "",
+                    cardViewModel.cards.value
+                )
+                if (!isValidQuestion) {
+                    Toast.makeText(context, errorQuestion, Toast.LENGTH_LONG).show()
                 } else {
                     val (errorMsg, isValid) = validateAnswer(answers)
                     if (isValid) {

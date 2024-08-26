@@ -92,7 +92,8 @@ class MainActivity : ComponentActivity() {
                             composable("CreateCard") {
                                 CreateFlashCard(
                                     navController = navController,
-                                    cardViewModel = createCardViewModel,
+                                    createCardViewModel = createCardViewModel,
+                                    cardViewModel = cardViewModel,
                                     question = createCardViewModel.question ,
                                     onQuestionChange = { newQuestion ->
                                         createCardViewModel.updateQuestion(newQuestion)

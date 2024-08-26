@@ -16,14 +16,24 @@ fun validateQuestion(newQuestion: String, question: String,  cards: List<FlashCa
 
 fun validateAnswer(answers: List<Pair<String, Boolean>>): Pair<String, Boolean> {
     var hasCorrectAnswer = false
+    val answerTexts = mutableSetOf<String>()
+
     if (answers.size < 2) {
         return Pair("A flash card must have at least two possible answers.", false)
     }
+
     for (answer in answers) {
         val (text, isCorrect) = answer
+
         if (text.isBlank()) {
             return Pair("Answer text cannot be empty.", false)
         }
+
+        if (answerTexts.contains(text)) {
+            return Pair("Answer text must be unique.", false)
+        }
+        answerTexts.add(text)
+
         if (isCorrect) {
             if (hasCorrectAnswer) {
                 return Pair("A flash card can only have one correct answer.", false)
@@ -31,8 +41,10 @@ fun validateAnswer(answers: List<Pair<String, Boolean>>): Pair<String, Boolean> 
             hasCorrectAnswer = true
         }
     }
+
     if (!hasCorrectAnswer) {
         return Pair("A flash card must have exactly one correct answer.", false)
     }
+
     return Pair("", true)
 }
