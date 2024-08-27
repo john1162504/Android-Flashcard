@@ -30,10 +30,12 @@ import nz.ac.canterbury.seng303.ass.models.FlashCard
 import nz.ac.canterbury.seng303.ass.viewmodels.FlashCardViewModel
 
 @Composable
-fun FlashCard(
+fun TaggedFlashCard(
     cardId: String,
+    tag: String,
     cardViewModel: FlashCardViewModel,
-    navController: NavController) {
+    navController: NavController
+) {
     cardViewModel.getCardById(cardId = cardId.toIntOrNull())
     val selectedCardState by cardViewModel.selectedCard.collectAsState(null)
     val card: FlashCard? = selectedCardState
@@ -48,23 +50,26 @@ fun FlashCard(
                     change.consume()
                     when {
                         dragAmount > 0 -> {
-                            val nextId = cardViewModel.getNextCardId(cardId.toIntOrNull())
-                            navController.navigate("FlashCard/${nextId}") {
-                                popUpTo("CardList") { inclusive = false }
-
+                            val nextId = cardViewModel.getNextCardId(cardId.toIntOrNull(), tag)
+                            navController.navigate("TaggedFlashCard/${nextId}/${tag}") {
+                                // Pop up to the TaggedCardList route and keep it in the stack
+                                popUpTo("Tags") { inclusive = false }
                             }
                         }
 
                         dragAmount < 0 -> {
-                            val previousId = cardViewModel.getPreviousCardId(cardId.toIntOrNull())
-                            navController.navigate("FlashCard/${previousId}") {
-                                popUpTo("CardList") { inclusive = false }
+                            val previousId =
+                                cardViewModel.getPreviousCardId(cardId.toIntOrNull(), tag)
+                            navController.navigate("TaggedFlashCard/${previousId}/${tag}") {
+                                // Pop up to the TaggedCardList route and keep it in the stack
+                                popUpTo("Tags") { inclusive = false }
                             }
                         }
                     }
                 }
             }
     ) {
+        // Content of the FlashCard
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -108,11 +113,8 @@ fun FlashCard(
         Spacer(modifier = Modifier.height(16.dp))
 
         card?.answers?.forEach { answer ->
-            SummaryRow(
-                result = answer
-            )
+            SummaryRow(result = answer)
             Spacer(modifier = Modifier.height(16.dp)) // Adds space between cards
         }
     }
-
 }

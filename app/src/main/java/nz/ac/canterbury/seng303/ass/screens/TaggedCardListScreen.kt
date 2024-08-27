@@ -42,14 +42,17 @@ import nz.ac.canterbury.seng303.ass.models.FlashCard
 import nz.ac.canterbury.seng303.ass.viewmodels.FlashCardViewModel
 
 @Composable
-fun CardList(
+fun TaggedCardList(
     navController: NavController,
     cardViewModel: FlashCardViewModel,
-    ) {
+    tag: String
+) {
     cardViewModel.getCards()
     val cards: List<FlashCard> by cardViewModel.cards.collectAsState()
 
-    if (cards.isEmpty()) {
+    val filteredCards = cards.filter { it.tag == tag }
+
+    if (filteredCards.isEmpty()) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -68,8 +71,8 @@ fun CardList(
         }
     } else {
         LazyColumn {
-            items(cards) { card ->
-                CardItem(
+            items(filteredCards) { card ->
+                TaggedCardItem(
                     navController = navController,
                     card = card,
                     deleteFn = { id: Int -> cardViewModel.deleteCardById(id) })
@@ -79,8 +82,9 @@ fun CardList(
     }
 }
 
+
 @Composable
-fun CardItem(navController: NavController, card: FlashCard,  deleteFn: (id:Int) -> Unit) {
+fun TaggedCardItem(navController: NavController, card: FlashCard,  deleteFn: (id:Int) -> Unit) {
     val context = LocalContext.current
     fun searchWeb(query: String) {
         val intent = Intent(Intent.ACTION_VIEW).apply {
@@ -94,7 +98,7 @@ fun CardItem(navController: NavController, card: FlashCard,  deleteFn: (id:Int) 
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
-            .clickable { navController.navigate("FlashCard/${card.id}") },
+            .clickable { navController.navigate("TaggedFlashCard/${card.id}/${card.tag}") },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
@@ -135,11 +139,11 @@ fun CardItem(navController: NavController, card: FlashCard,  deleteFn: (id:Int) 
             )
         }
         IconButton(onClick = {
-                navController.navigate("EditCard/${card.id}")
+            navController.navigate("EditCard/${card.id}")
         },
             modifier = Modifier
                 .size(56.dp)
-            ) {
+        ) {
             Icon(
                 imageVector = Icons.TwoTone.Edit,
                 contentDescription = "Edit",
@@ -155,7 +159,7 @@ fun CardItem(navController: NavController, card: FlashCard,  deleteFn: (id:Int) 
             builder.setMessage("Delete Flashcard \"${card.question}\"?")
                 .setCancelable(false)
                 .setPositiveButton("Delete") { dialog, id ->
-                        deleteFn(card.id)
+                    deleteFn(card.id)
                     dialog.dismiss()
                 }
                 .setNegativeButton("Cancel") { dialog, id ->
@@ -166,7 +170,7 @@ fun CardItem(navController: NavController, card: FlashCard,  deleteFn: (id:Int) 
         },
             modifier = Modifier
                 .size(56.dp)
-            ) {
+        ) {
             Icon(
                 imageVector = Icons.TwoTone.Delete,
                 contentDescription = "Delete",
@@ -179,3 +183,4 @@ fun CardItem(navController: NavController, card: FlashCard,  deleteFn: (id:Int) 
         }
     }
 }
+

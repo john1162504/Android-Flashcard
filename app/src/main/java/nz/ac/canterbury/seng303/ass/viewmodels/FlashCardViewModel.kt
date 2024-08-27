@@ -78,27 +78,29 @@ class FlashCardViewModel(
         }
     }
 
-    // Method to get the next card ID
-    fun getNextCardId(currentCardId: Int?): Int {
+    fun getNextCardId(currentCardId: Int?, inputTag: String? = null): Int {
         val cardList = _cards.value
-        val currentIndex = cardList.indexOfFirst { it.getIdentifier() == currentCardId }
+        val filteredCardList = inputTag?.let { tag -> cardList.filter { it.tag == tag } } ?: cardList
+        val currentIndex = filteredCardList.indexOfFirst { it.getIdentifier() == currentCardId }
+
         return if (currentIndex != -1) {
-            val nextIndex = (currentIndex + 1) % cardList.size
-            cardList[nextIndex].getIdentifier()
+            val nextIndex = (currentIndex + 1) % filteredCardList.size
+            filteredCardList[nextIndex].getIdentifier()
         } else {
-            cardList.firstOrNull()?.getIdentifier() ?: -1 // Return -1 if list is empty
+            filteredCardList.firstOrNull()?.getIdentifier() ?: -1 // Return -1 if list is empty
         }
     }
 
-    // Method to get the previous card ID
-    fun getPreviousCardId(currentCardId: Int?): Int {
+    fun getPreviousCardId(currentCardId: Int?, inputTag: String? = null): Int {
         val cardList = _cards.value
-        val currentIndex = cardList.indexOfFirst { it.getIdentifier() == currentCardId }
+        val filteredCardList = inputTag?.let { tag -> cardList.filter { it.tag == tag } } ?: cardList
+        val currentIndex = filteredCardList.indexOfFirst { it.getIdentifier() == currentCardId }
+
         return if (currentIndex != -1) {
-            val prevIndex = (currentIndex - 1 + cardList.size) % cardList.size
-            cardList[prevIndex].getIdentifier()
+            val prevIndex = (currentIndex - 1 + filteredCardList.size) % filteredCardList.size
+            filteredCardList[prevIndex].getIdentifier()
         } else {
-            cardList.lastOrNull()?.getIdentifier() ?: -1 // Return -1 if list is empty
+            filteredCardList.lastOrNull()?.getIdentifier() ?: -1 // Return -1 if list is empty
         }
     }
 }

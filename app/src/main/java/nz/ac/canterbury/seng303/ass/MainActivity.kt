@@ -33,6 +33,8 @@ import nz.ac.canterbury.seng303.ass.screens.EditCard
 import nz.ac.canterbury.seng303.ass.screens.FlashCard
 import nz.ac.canterbury.seng303.ass.screens.PlayCard
 import nz.ac.canterbury.seng303.ass.screens.Tag
+import nz.ac.canterbury.seng303.ass.screens.TaggedCardList
+import nz.ac.canterbury.seng303.ass.screens.TaggedFlashCard
 import nz.ac.canterbury.seng303.ass.ui.theme.Lab1Theme
 import nz.ac.canterbury.seng303.ass.viewmodels.CreateCardViewModel
 import nz.ac.canterbury.seng303.ass.viewmodels.EditCardViewModel
@@ -95,15 +97,30 @@ class MainActivity : ComponentActivity() {
                                 Tag(navController, cardViewModel)
                             }
                             composable(
-                                "CardList/{tag}",
+                                "TaggedCardList/{tag}",
                                 arguments = listOf(navArgument("tag") {
                                     type = NavType.StringType
                                 })
                             ) {
                                 backStackEntry ->
                                 val tag = backStackEntry.arguments?.getString("tag")
-                                tag?.let { tag: String ->
-                                    CardList(navController, cardViewModel, tag) }
+                                tag?.let { tagParam: String ->
+                                    TaggedCardList(navController, cardViewModel, tagParam) }
+                            }
+                            composable(
+                                "TaggedFlashCard/{cardId}/{tag}",
+                                arguments = listOf(
+                                    navArgument("cardId") { type = NavType.StringType },
+                                    navArgument("tag") { type = NavType.StringType }
+                                )
+                            ) { backStackEntry ->
+                                val cardId = backStackEntry.arguments?.getString("cardId")
+                                val tag = backStackEntry.arguments?.getString("tag")
+                                cardId?.let { cardIdParam: String ->
+                                    tag?.let { tagParam: String ->
+                                        TaggedFlashCard(cardIdParam, tagParam, cardViewModel, navController)
+                                    }
+                                }
                             }
 
 
@@ -119,8 +136,8 @@ class MainActivity : ComponentActivity() {
                             ) {
                                     backStackEntry ->
                                 val tag = backStackEntry.arguments?.getString("tag")
-                                tag?.let { tag: String ->
-                                    PlayCard(navController, cardViewModel, tag) }
+                                tag?.let { tagParam: String ->
+                                    PlayCard(navController, cardViewModel, tagParam) }
                             }
 
 
