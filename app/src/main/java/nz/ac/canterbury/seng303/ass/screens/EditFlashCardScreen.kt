@@ -64,6 +64,15 @@ fun EditCard(
                 .padding(bottom = 8.dp)
         )
 
+        OutlinedTextField(
+            value = editCardViewModel.tag,
+            onValueChange = { editCardViewModel.updateTag(it) },
+            label = { Text("Tag (Optional)") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 8.dp)
+        )
+
         // Display each answer with a delete button
         editCardViewModel.answers.forEachIndexed { index, answer ->
             AnswerRow(
@@ -123,7 +132,9 @@ fun EditCard(
                             cardId.toIntOrNull(),
                             card = FlashCard(
                                 cardId.toInt(),
-                                editCardViewModel.question, editCardViewModel.answers
+                                editCardViewModel.question,
+                                editCardViewModel.tag,
+                                editCardViewModel.answers
                             )
                         )
                         val builder = android.app.AlertDialog.Builder(context)

@@ -1,8 +1,11 @@
 package nz.ac.canterbury.seng303.ass.screens
 
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -36,20 +39,29 @@ import nz.ac.canterbury.seng303.ass.models.FlashCard
 import nz.ac.canterbury.seng303.ass.viewmodels.FlashCardViewModel
 
 @Composable
-fun PlayCard(navController: NavController, cardViewModel: FlashCardViewModel) {
+fun PlayCard(navController: NavController,
+             cardViewModel: FlashCardViewModel,
+             tag: String? = null
+             ) {
     cardViewModel.getCards()
     val context = LocalContext.current
     var currentIndex by remember { mutableStateOf(0) }
     val cards: List<FlashCard> by cardViewModel.cards.collectAsState()
-    val shuffledCards by remember { mutableStateOf(cards.shuffled()) }
 
+    val filteredCards = if (tag != null) {
+        cards.filter { it.tag == tag }
+    } else {
+        cards
+    }
+
+    val shuffledCards by remember { mutableStateOf(filteredCards.shuffled()) }
     var answers by remember { mutableStateOf<List<Pair<String, Boolean>>>(emptyList()) }
     var selectedAnswer by remember { mutableStateOf<Pair<String, Boolean>?>(null) }
     var results by remember { mutableStateOf<List<Pair<String, Boolean>>>(emptyList()) }
 
     // Update answers when currentIndex changes
     LaunchedEffect(currentIndex) {
-        if (cards.isNotEmpty() && currentIndex < cards.size) {
+        if (cards.isNotEmpty() && currentIndex < shuffledCards.size) {
             answers = shuffledCards[currentIndex].answers.shuffled()
             selectedAnswer = null
         }
@@ -87,17 +99,38 @@ fun PlayCard(navController: NavController, cardViewModel: FlashCardViewModel) {
                         .border(
                             width = 2.dp,
                             color = Color.DarkGray,
-                            shape = RoundedCornerShape(16.dp),
+                            shape = RoundedCornerShape(16.dp)
                         )
                         .padding(16.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    Text(
-                        text = shuffledCards[currentIndex].question,
-                        fontSize = 25.sp
-                    )
+                    Box(
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            text = shuffledCards[currentIndex].question,
+                            fontSize = 25.sp,
+                            modifier = Modifier.align(Alignment.CenterStart)
+                        )
+                        Spacer(modifier = Modifier.height(6.dp))
+                        Text(
+                            text = shuffledCards[currentIndex].tag,
+                            fontSize = 14.sp,
+                            color = Color.White,
+                            modifier = Modifier
+                                .align(Alignment.BottomEnd)
+                                .background(Color(0xFF7FF7BB), shape = RoundedCornerShape(16.dp))
+                                .border(
+                                    width = 2.dp,
+                                    color = Color(0xFF7FF7BB),
+                                    shape = RoundedCornerShape(16.dp)
+                                )
+                                .padding(3.dp)
+                        )
+                    }
                 }
+
                 Spacer(modifier = Modifier.height(16.dp))
 
                 answers.forEach { answer ->
@@ -120,7 +153,7 @@ fun PlayCard(navController: NavController, cardViewModel: FlashCardViewModel) {
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text(text = "${currentIndex + 1}/${cards.size}")
+                    Text(text = "${currentIndex + 1}/${shuffledCards.size}")
                     Button(
                         onClick = {
                             if (selectedAnswer == null) {
@@ -159,7 +192,7 @@ fun PlayCard(navController: NavController, cardViewModel: FlashCardViewModel) {
                     fontSize = 40.sp,
                     fontWeight = FontWeight.Bold,
                 )
-                Text(text = "Score: ${correctAnswersCount}/${cards.size}",
+                Text(text = "Score: ${correctAnswersCount}/${shuffledCards.size}",
                     fontSize = 40.sp,
                     fontWeight = FontWeight.W400,
                 )
@@ -188,8 +221,9 @@ fun CardRow(
                 color = Color.LightGray,
                 shape = RoundedCornerShape(16.dp),
             )
+            .clickable { onCheckedChange() }  // Make the row clickable
             .padding(bottom = 16.dp),
-            verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             text = answer,
@@ -203,7 +237,6 @@ fun CardRow(
         )
     }
 }
-
 
 @Composable
 fun SummaryRow(

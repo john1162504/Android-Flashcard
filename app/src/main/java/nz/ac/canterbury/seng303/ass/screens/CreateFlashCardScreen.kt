@@ -27,9 +27,11 @@ fun CreateFlashCard(
     cardViewModel: FlashCardViewModel,
     question: String,
     onQuestionChange: (String) -> Unit,
+    tag: String,
+    onTagChange: (String) -> Unit,
     answers: List<Pair<String, Boolean>>,
     onAnswersChange: (List<Pair<String, Boolean>>) -> Unit,
-    createFlashCardFn: (String, List<Pair<String, Boolean>>) -> Unit
+    createFlashCardFn: (String, String,  List<Pair<String, Boolean>>) -> Unit
 ) {
     cardViewModel.getCards()
     val context = LocalContext.current
@@ -53,6 +55,15 @@ fun CreateFlashCard(
             value = question,
             onValueChange = { onQuestionChange(it) },
             label = { Text("Question") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 8.dp)
+        )
+
+        OutlinedTextField(
+            value = tag,
+            onValueChange = { onTagChange(it) },
+            label = { Text("Tag (Optional)") },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 8.dp)
@@ -113,7 +124,7 @@ fun CreateFlashCard(
                 } else {
                     val (errorMsg, isValid) = validateAnswer(answers)
                     if (isValid) {
-                        createFlashCardFn(question, answers)
+                        createFlashCardFn(question, tag , answers)
                         val builder = android.app.AlertDialog.Builder(context)
                         builder.setMessage("Created Card!")
                             .setCancelable(false)

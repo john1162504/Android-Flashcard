@@ -32,6 +32,7 @@ import nz.ac.canterbury.seng303.ass.screens.CreateFlashCard
 import nz.ac.canterbury.seng303.ass.screens.EditCard
 import nz.ac.canterbury.seng303.ass.screens.FlashCard
 import nz.ac.canterbury.seng303.ass.screens.PlayCard
+import nz.ac.canterbury.seng303.ass.screens.Tag
 import nz.ac.canterbury.seng303.ass.ui.theme.Lab1Theme
 import nz.ac.canterbury.seng303.ass.viewmodels.CreateCardViewModel
 import nz.ac.canterbury.seng303.ass.viewmodels.EditCardViewModel
@@ -54,7 +55,7 @@ class MainActivity : ComponentActivity() {
                     topBar = {
                         // Add your AppBar content here
                         TopAppBar(
-                            title = { Text("SENG303 Lab 2") },
+                            title = { Text("Flash303") },
                             navigationIcon = {
                                 IconButton(onClick = { navController.popBackStack() }) {
                                     Icon(
@@ -74,6 +75,11 @@ class MainActivity : ComponentActivity() {
                             composable("Home") {
                                 Home(navController = navController)
                             }
+
+                            //View Flashcards
+                            composable("CardList") {
+                                CardList(navController, cardViewModel)
+                            }
                             composable(
                                 "FlashCard/{cardId}",
                                 arguments = listOf(navArgument("cardId") {
@@ -83,12 +89,42 @@ class MainActivity : ComponentActivity() {
                                 val cardId = backStackEntry.arguments?.getString("cardId")
                                 cardId?.let { cardIdParam: String -> FlashCard(cardIdParam, cardViewModel, navController) }
                             }
+
+                            //View Flashcards by tag
+                            composable("Tags") {
+                                Tag(navController, cardViewModel)
+                            }
+                            composable(
+                                "CardList/{tag}",
+                                arguments = listOf(navArgument("tag") {
+                                    type = NavType.StringType
+                                })
+                            ) {
+                                backStackEntry ->
+                                val tag = backStackEntry.arguments?.getString("tag")
+                                tag?.let { tag: String ->
+                                    CardList(navController, cardViewModel, tag) }
+                            }
+
+
+                            //PLay Flashcards
                             composable("PlayCard") {
                                 PlayCard(navController, cardViewModel)
                             }
-                            composable("CardList") {
-                                CardList(navController, cardViewModel)
+                            composable(
+                                "PlayCard/{tag}",
+                                arguments = listOf(navArgument("tag") {
+                                    type = NavType.StringType
+                                })
+                            ) {
+                                    backStackEntry ->
+                                val tag = backStackEntry.arguments?.getString("tag")
+                                tag?.let { tag: String ->
+                                    PlayCard(navController, cardViewModel, tag) }
                             }
+
+
+                            //Flashcards change
                             composable("CreateCard") {
                                 CreateFlashCard(
                                     navController = navController,
@@ -98,11 +134,15 @@ class MainActivity : ComponentActivity() {
                                     onQuestionChange = { newQuestion ->
                                         createCardViewModel.updateQuestion(newQuestion)
                                     },
+                                    tag = createCardViewModel.tag,
+                                    onTagChange = { newTag ->
+                                        createCardViewModel.updateTag(newTag)
+                                    },
                                     answers = createCardViewModel.answers,
                                     onAnswersChange = { newAnswer ->
                                         createCardViewModel.updateAnswers(newAnswer)
                                     },
-                                    createFlashCardFn = {question, answers -> cardViewModel.createCard(question, answers)}
+                                    createFlashCardFn = {question, tag, answers -> cardViewModel.createCard(question, tag, answers)}
                                 )
                             }
                             composable("EditCard/{cardId}", arguments = listOf(navArgument("cardId") {
@@ -128,6 +168,9 @@ fun Home(navController: NavController) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Button(onClick = { navController.navigate("Tags")}) {
+            Text(text = "Tags")
+        }
         Button(onClick = { navController.navigate("CardList") }) {
             Text(text = "Card List")
         }

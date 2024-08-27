@@ -3,61 +3,71 @@ package nz.ac.canterbury.seng303.ass.models
 class FlashCard (
     val id: Int,
     val question: String,
+    val tag: String,
     val answers: List<Pair<String, Boolean>>): Identifiable {
 
-        companion object {
-            fun getFlashCards(): List<FlashCard> {
-                return listOf(
-                    FlashCard(
-                        1,
-                        "Math Basics",
-                        listOf(
-                            "What is 2 + 2?" to false,
-                            "4" to true,  // Correct answer
-                            "5" to false,
-                            "3" to false
-                        )
-                    ),
-                    FlashCard(
-                        2,
-                        "Geography Quiz",
-                        listOf(
-                            "Is Paris the capital of France?" to false,
-                            "Paris" to true,  // Correct answer
-                            "Berlin" to false,
-                            "London" to false
-                        )
-                    ),
-                    FlashCard(
-                        3,
-                        "History Facts",
-                        listOf(
-                            "Did World War I begin in 1914?" to false,
-                            "Yes" to true,  // Correct answer
-                            "No" to false
-                        )
-                    ),
-                    FlashCard(
-                        4,
-                        "Science Trivia",
-                        listOf(
-                            "Is water made up of two hydrogen atoms and one oxygen atom?" to false,
-                            "Yes" to true,  // Correct answer
-                            "No" to false
-                        )
-                    ),
-                    FlashCard(
-                        5,
-                        "Literature Test",
-                        listOf(
-                            "Is '1984' written by George Orwell?" to false,
-                            "Yes" to true,  // Correct answer
-                            "No" to false
-                        )
+
+    companion object {
+        fun getFlashCards(): List<FlashCard> {
+            return listOf(
+                FlashCard(
+                    id = 1,
+                    question = "What is the capital of France?",
+                    tag = "Geography",
+                    answers = listOf(
+                        "Paris" to true,
+                        "London" to false,
+                        "Berlin" to false,
+                        "Madrid" to false
+                    )
+                ),
+                FlashCard(
+                    id = 2,
+                    question = "Which continent is France located in?",
+                    tag = "Geography",
+                    answers = listOf(
+                        "Europe" to true,
+                        "Asia" to false,
+                        "Africa" to false,
+                        "Australia" to false
+                    )
+                ),
+                FlashCard(
+                    id = 3,
+                    question = "Who wrote 'Romeo and Juliet'?",
+                    tag = "Literature",
+                    answers = listOf(
+                        "William Shakespeare" to true,
+                        "Charles Dickens" to false,
+                        "Mark Twain" to false,
+                        "Jane Austen" to false
+                    )
+                ),
+                FlashCard(
+                    id = 4,
+                    question = "What is the powerhouse of the cell?",
+                    tag = "Biology",
+                    answers = listOf(
+                        "Mitochondria" to true,
+                        "Nucleus" to false,
+                        "Ribosome" to false,
+                        "Chloroplast" to false
+                    )
+                ),
+                FlashCard(
+                    id = 5,
+                    question = "What is the chemical symbol for water?",
+                    tag = "Chemistry",
+                    answers = listOf(
+                        "H2O" to true,
+                        "CO2" to false,
+                        "NaCl" to false,
+                        "O2" to false
                     )
                 )
-            }
+            )
         }
+    }
 
     override fun getIdentifier(): Int {
         return id

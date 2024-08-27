@@ -47,10 +47,11 @@ class FlashCardViewModel(
         }
     }
 
-    fun createCard(question: String, answers: List<Pair<String, Boolean>>) = viewModelScope.launch {
+    fun createCard(question: String, tag: String, answers: List<Pair<String, Boolean>>) = viewModelScope.launch {
         val card = FlashCard(
             id = Random.nextInt(0, Int.MAX_VALUE),
             question = question,
+            tag = tag,
             answers = answers
         )
         cardStorage.insert(card).catch { Log.e("CARD_VIEW_MODEL", "Could not insert card") }

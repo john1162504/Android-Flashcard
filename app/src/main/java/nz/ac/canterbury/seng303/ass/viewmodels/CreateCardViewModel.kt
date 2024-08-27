@@ -18,6 +18,13 @@ class CreateCardViewModel: ViewModel() {
         question = newQuestion
     }
 
+    var tag by mutableStateOf("")
+        private set
+
+    fun updateTag(newTag: String) {
+        tag = newTag
+    }
+
     var answers: List<Pair<String, Boolean>> by mutableStateOf(defaultAnswers)
         private set
 

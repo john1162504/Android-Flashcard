@@ -40,13 +40,23 @@ import androidx.navigation.NavController
 
 import nz.ac.canterbury.seng303.ass.models.FlashCard
 import nz.ac.canterbury.seng303.ass.viewmodels.FlashCardViewModel
-import java.time.format.TextStyle
 
 @Composable
-fun CardList(navController: NavController, cardViewModel: FlashCardViewModel ) {
+fun CardList(
+    navController: NavController,
+    cardViewModel: FlashCardViewModel,
+    tag: String? = null
+    ) {
     cardViewModel.getCards()
     val cards: List<FlashCard> by cardViewModel.cards.collectAsState()
-    if (cards.isEmpty()) {
+
+    val filteredCards = if (tag != null) {
+        cards.filter { it.tag == tag }
+    } else {
+        cards
+    }
+
+    if (filteredCards.isEmpty()) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -65,7 +75,7 @@ fun CardList(navController: NavController, cardViewModel: FlashCardViewModel ) {
         }
     } else {
         LazyColumn {
-            items(cards) { card ->
+            items(filteredCards) { card ->
                 CardItem(
                     navController = navController,
                     card = card,
