@@ -201,6 +201,23 @@ fun PlayCard(navController: NavController,
                     SummaryRow(result = result)
                     Spacer(modifier = Modifier.height(16.dp)) // Adds space between cards
                 }
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(vertical = 32.dp)
+                        .padding(horizontal = 40.dp),
+                    verticalAlignment = Alignment.Bottom,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Button(
+                        onClick = {
+                            navController.navigateUp()
+                        }
+                    ) {
+                        Text(text = "Back")
+                    }
+                }
             }
         }
     }

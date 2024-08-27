@@ -185,18 +185,17 @@ fun Home(navController: NavController) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Button(onClick = { navController.navigate("Tags")}) {
-            Text(text = "Tags")
+        Button(onClick = { navController.navigate("CreateCard") }) {
+            Text(text = "Create Flashcard")
         }
         Button(onClick = { navController.navigate("CardList") }) {
-            Text(text = "Card List")
-        }
-        
-        Button(onClick = { navController.navigate("CreateCard") }) {
-            Text(text = "Create Flash Card")
+            Text(text = "Browse All Flashcards")
         }
         Button(onClick = { navController.navigate("PlayCard") }) {
-            Text(text = "Play Flash Card")
+            Text(text = "Play All Flashcards")
+        }
+        Button(onClick = { navController.navigate("Tags")}) {
+            Text(text = "Browse and Play Flashcards By Tag")
         }
     }
 }

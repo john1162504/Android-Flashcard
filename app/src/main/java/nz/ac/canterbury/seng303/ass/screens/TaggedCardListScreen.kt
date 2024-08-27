@@ -13,13 +13,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.twotone.Delete
 import androidx.compose.material.icons.twotone.Edit
+import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -70,13 +69,36 @@ fun TaggedCardList(
             )
         }
     } else {
-        LazyColumn {
-            items(filteredCards) { card ->
-                TaggedCardItem(
-                    navController = navController,
-                    card = card,
-                    deleteFn = { id: Int -> cardViewModel.deleteCardById(id) })
-                Divider()
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+                filteredCards.forEach { card ->
+                    TaggedCardItem(
+                        navController = navController,
+                        card = card,
+                        deleteFn = { id: Int -> cardViewModel.deleteCardById(id) }
+                    )
+                    Divider()
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(vertical = 32.dp)
+                    .padding(horizontal = 40.dp),
+                verticalAlignment = Alignment.Bottom,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Button(
+                    onClick = {
+                    navController.navigate("PlayCard/${tag}")
+                }
+                ) {
+                    Text(text = "Play Flashcards")
+                }
             }
         }
     }
@@ -158,11 +180,11 @@ fun TaggedCardItem(navController: NavController, card: FlashCard,  deleteFn: (id
             val builder = AlertDialog.Builder(context)
             builder.setMessage("Delete Flashcard \"${card.question}\"?")
                 .setCancelable(false)
-                .setPositiveButton("Delete") { dialog, id ->
+                .setPositiveButton("Delete") { dialog, _ ->
                     deleteFn(card.id)
                     dialog.dismiss()
                 }
-                .setNegativeButton("Cancel") { dialog, id ->
+                .setNegativeButton("Cancel") { dialog, _ ->
                     dialog.dismiss()
                 }
             val alert = builder.create()
